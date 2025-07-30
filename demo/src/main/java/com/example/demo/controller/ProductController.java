@@ -1,19 +1,21 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ProductDTO;
-import com.example.demo.entity.Product;
 import com.example.demo.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @RestController
 @RequestMapping("/api/products")
@@ -21,7 +23,6 @@ import java.util.concurrent.Executors;
 public class ProductController {
 
     private final ProductService productService;
-    private final ExecutorService threadPool = Executors.newFixedThreadPool(20);
 
 
     @GetMapping
@@ -66,7 +67,7 @@ public class ProductController {
     @PostMapping("/{id}/add-to-cart")
     public ResponseEntity<String> addToCart(@PathVariable Long id) {
         try {
-            CompletableFuture.runAsync(()-> productService.decreaseStock(id), threadPool);
+            productService.decreaseStock(id);
             return ResponseEntity.ok("Produto adicionado ao carrinho. Estoque diminuído em 1.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body("Erro: " + e.getMessage());
