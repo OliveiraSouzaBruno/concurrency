@@ -1,0 +1,10 @@
+config:
+  target: "http://localhost:8080"
+  phases:
+    - duration: 1
+      arrivalCount: 50
+scenarios:
+  - flow:
+      - post:
+          url: "/api/products/1/add-to-cart"
+
